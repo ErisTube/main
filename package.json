@@ -1,7 +1,7 @@
 {
 	"name": "eristube",
 	"description": "A powerful music player for your Discord bot on Eris.",
-	"version": "1.0.0-dev",
+	"version": "1.0.0-dev.1737820426",
 	"main": "index.js",
 	"scripts": {
 		"build": "tsc -p tsconfig.json",
@@ -24,7 +24,8 @@
 		"discord music",
 		"discord player",
 		"discord bot on eris",
-		"discord player music"
+		"discord player music",
+		"eristube"
 	],
 	"author": "ErisTube Inc.",
 	"license": "Apache-2.0",

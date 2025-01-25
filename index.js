@@ -19,3 +19,4 @@ __exportStar(require("./lib/classes/Emitter"), exports);
 __exportStar(require("./lib/classes/Plugin"), exports);
 __exportStar(require("./lib/classes/Error"), exports);
 __exportStar(require("./lib/classes/Voice"), exports);
+__exportStar(require("./lib/Enums"), exports);
