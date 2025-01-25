@@ -61,3 +61,5 @@ export * from './classes/Error';
 export * from './classes/Plugin';
 export * from './Options';
 export * from './Events';
+
+export * from './Enums';

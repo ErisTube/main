@@ -1,3 +1,7 @@
+// Import requirements
+import { ErisTube } from '../ErisTube';
+import { ETPluginType } from '../Enums';
+
 /**
  * @abstract
  *
@@ -12,6 +16,14 @@ export abstract class ETPlugin {
 	 * @type {string}
 	 */
 	abstract readonly name: string;
+
+	/**
+	 * Plugin type
+	 *
+	 * @readonly
+	 * @type {ETPluginType}
+	 */
+	abstract readonly type: ETPluginType;
 
 	/**
 	 * Plugin version
@@ -30,6 +42,14 @@ export abstract class ETPlugin {
 	abstract readonly description: string;
 
 	/**
+	 * ErisTube instance
+	 *
+	 * @readonly
+	 * @type {ErisTube}
+	 */
+	abstract eristube: ErisTube;
+
+	/**
 	 * Abstract method that must be implemented by subclasses to process the provided data.
 	 *
 	 * @abstract
@@ -39,4 +59,16 @@ export abstract class ETPlugin {
 	 * @returns {Promise<any>} A promise that resolves when processing is complete.
 	 */
 	abstract resolve<T = any>(data: T): Promise<any>;
+
+	/**
+	 * Initializes the ErisTube instance.
+	 *
+	 * @param {ErisTube} e - The ErisTube instance to initialize.
+	 *
+	 * @returns {ETPlugin} Updated instance.
+	 */
+	public init(e: ErisTube): ETPlugin {
+		this.eristube = e;
+		return this;
+	}
 }
