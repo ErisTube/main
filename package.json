@@ -1,0 +1,54 @@
+{
+	"name": "eristube",
+	"description": "A powerful music player for your Discord bot on Eris.",
+	"version": "1.0.0-dev.1737765949",
+	"main": "index.js",
+	"scripts": {
+		"build": "tsc -p tsconfig.json",
+		"build:del": "rimraf dist && tsc -p tsconfig.json",
+		"build:docs": "docgen -s src/*.ts src/**/*.ts -o docs/index.json -c docs/index.yml -g -S 1 -j .jsconfig.json",
+		"pub": "npm publish",
+		"pub:dev": "npm publish --tag dev"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/ErisTube/main.git"
+	},
+	"keywords": [
+		"bot",
+		"eris",
+		"music",
+		"discord",
+		"eris bot",
+		"discord bot",
+		"discord music",
+		"discord player",
+		"discord bot on eris",
+		"discord player music"
+	],
+	"author": "ErisTube Inc.",
+	"license": "Apache-2.0",
+	"bugs": {
+		"url": "https://github.com/ErisTube/main/issues"
+	},
+	"dependencies": {
+		"eris": "github:abalabahaha/eris#dev"
+	},
+	"devDependencies": {
+		"@babel/core": "^7.26.0",
+		"@babel/plugin-transform-class-properties": "^7.25.9",
+		"@babel/plugin-transform-object-rest-spread": "^7.25.9",
+		"@babel/preset-env": "^7.26.0",
+		"@babel/preset-typescript": "^7.26.0",
+		"@distube/docgen": "github:distubejs/docgen",
+		"@types/node": "^22.10.5",
+		"@types/yt-search": "^2.10.3",
+		"jsdoc-babel": "^0.5.0",
+		"rimraf": "^6.0.1",
+		"typescript": "^5.7.3"
+	},
+	"engines": {
+		"node": ">=18.20.6"
+	},
+	"types": "./types/index.d.ts"
+}
