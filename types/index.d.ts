@@ -57,9 +57,16 @@ export declare class ErisTube extends ETEmitter<ETEvents> {
 export * from './classes/Emitter';
 export * from './classes/Voice';
 export * from './classes/Error';
-
 export * from './classes/Plugin';
+
+export * from './util/formatDuration.function';
+export * from './util/formatNumber.function';
+export * from './util/getVideoStats.function';
+export * from './util/isValidURL.function';
+export * from './util/normalizeArray.function';
+
 export * from './Options';
 export * from './Events';
 
 export * from './Enums';
+export * from './Data';
