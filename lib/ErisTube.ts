@@ -8,7 +8,15 @@ import { ETEmitter } from './classes/Emitter';
 import { ETFilters } from './classes/Filters';
 
 // Import types
-import { ETEvents, ETOptions, ETPlugin } from '../types';
+import {
+	ETEvents,
+	ETOptions,
+	ETPlugin,
+	SearchPlaylist,
+	SearchTrackData,
+	SearchType,
+} from '../types';
+import { ETPluginType } from './Enums';
 
 /**
  * ErisTube class.
@@ -94,6 +102,59 @@ export class ErisTube extends ETEmitter<ETEvents> {
 	}
 
 	/**
+	 * Searches for tracks or playlists based on the given query.
+	 *
+	 * @param {string} query - The search query (e.g., song name, artist, or playlist title).
+	 * @param {SearchType} [type='track'] - The type of search (`'track'` or `'playlist'`). Defaults to `'track'`.
+	 * @param {number} [count=null] - The maximum number of results to return. If `null`, returns all available results.
+	 *
+	 * @returns {Promise<SearchTrackData | SearchTrackData[] | SearchPlaylist[]>} Resolves to either a single track, an array of tracks, or an array of playlists.
+	 */
+	public async search(
+		query: string,
+		type: SearchType = 'track',
+		count: number = null
+	): Promise<SearchTrackData | SearchTrackData[] | SearchPlaylist[]> {
+		try {
+			const plugins = this.plugins
+				.values()
+				.filter(p => p.type === ETPluginType.SEARCH)
+				.toArray();
+
+			if (!plugins.length) {
+				throw new ETError(
+					'Could not find the required plugin for search. Try installing @eristube/youtube.'
+				);
+			}
+
+			if (this.options.debug) {
+				console.log(
+					`[ErisTube] Found ${plugins.length} plugins for searching tracks!`
+				);
+			}
+
+			let results: SearchTrackData | SearchTrackData[] | SearchPlaylist[] =
+				undefined;
+
+			for (const plugin of plugins) {
+				results = await plugin.resolve({
+					type: type,
+					query: query,
+					count: count ?? this.options.settings.searchResultsCount,
+				});
+
+				if (typeof results != 'undefined') {
+					break;
+				}
+			}
+
+			return results;
+		} catch (e) {
+			throw new ETError(e.message);
+		}
+	}
+
+	/**
 	 * Registers an array of plugins and ensures there are no duplicates.
 	 *
 	 * @private
@@ -136,8 +197,20 @@ export class ErisTube extends ETEmitter<ETEvents> {
 	 * @returns {ETOptions} The processed and validated configuration options.
 	 */
 	#initConfiguration(options: ETOptions): ETOptions {
-		if (typeof options?.debug != 'boolean') options.debug = true;
+		if (typeof options?.debug != 'boolean') options.debug = false;
 		if (!Array.isArray(options?.plugins)) options.plugins = [];
+
+		if (typeof options?.settings != 'object') {
+			options.settings = {
+				defaultVolume: 10,
+				searchResultsCount: 10,
+			};
+		} else {
+			if (typeof options?.settings?.defaultVolume != 'number')
+				options.settings.defaultVolume = 10;
+			if (typeof options?.settings?.searchResultsCount != 'number')
+				options.settings.searchResultsCount = 10;
+		}
 
 		return options;
 	}

@@ -7,6 +7,7 @@ import { ETVoice } from './classes/Voice';
 
 import { ETEvents } from './Events';
 import { ETOptions } from './Options';
+import { SearchPlaylist, SearchTrackData, SearchType } from './Data';
 
 export declare class ErisTube extends ETEmitter<ETEvents> {
 	constructor(client: Client, options?: ETOptions);
@@ -25,6 +26,21 @@ export declare class ErisTube extends ETEmitter<ETEvents> {
 	 * @returns `True` if the ErisTube is ready, otherwise `false`.
 	 */
 	public get isReady(): boolean;
+
+	/**
+	 * Searches for tracks or playlists based on the given query.
+	 *
+	 * @param query - The search query (e.g., song name, artist, or playlist title).
+	 * @param type - The type of search (`'track'` or `'playlist'`).
+	 * @param count - The maximum number of results to return. If `null`, returns all available results.
+	 *
+	 * @returns Resolves to either a single track, an array of tracks, or an array of playlists.
+	 */
+	public search(
+		query: string,
+		type?: SearchType,
+		count?: number
+	): Promise<SearchTrackData | SearchTrackData[] | SearchPlaylist[]>;
 
 	/**
 	 * Registers an array of plugins and ensures there are no duplicates.
@@ -61,6 +77,8 @@ export * from './classes/Emitter';
 export * from './classes/Voice';
 export * from './classes/Error';
 export * from './classes/Plugin';
+export * from './classes/Filters';
+export * from './classes/Stream';
 
 export * from './util/formatDuration.function';
 export * from './util/formatNumber.function';

@@ -4,6 +4,12 @@ import { PlaybackFilter } from '../../types';
 // Import utils
 import { normalizeArray, RestOrArray } from '../util/normalizeArray.function';
 
+/**
+ * A class that provides various filters for ErisTube queues.
+ *
+ * @class
+ * @classdesc ErisTube filters manager
+ */
 export class ETFilters {
 	private _data: PlaybackFilter[];
 	private _debug: boolean;
