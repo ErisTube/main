@@ -21,6 +21,7 @@ __exportStar(require("./lib/classes/Plugin"), exports);
 __exportStar(require("./lib/classes/Error"), exports);
 __exportStar(require("./lib/classes/Voice"), exports);
 __exportStar(require("./lib/classes/Stream"), exports);
+__exportStar(require("./lib/classes/GuildQueue"), exports);
 __exportStar(require("./lib/util/formatDuration.function"), exports);
 __exportStar(require("./lib/util/formatNumber.function"), exports);
 __exportStar(require("./lib/util/getVideoStats.function"), exports);
