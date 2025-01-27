@@ -16,9 +16,11 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./lib/ErisTube"), exports);
 __exportStar(require("./lib/classes/Emitter"), exports);
+__exportStar(require("./lib/classes/Filters"), exports);
 __exportStar(require("./lib/classes/Plugin"), exports);
 __exportStar(require("./lib/classes/Error"), exports);
 __exportStar(require("./lib/classes/Voice"), exports);
+__exportStar(require("./lib/classes/Stream"), exports);
 __exportStar(require("./lib/util/formatDuration.function"), exports);
 __exportStar(require("./lib/util/formatNumber.function"), exports);
 __exportStar(require("./lib/util/getVideoStats.function"), exports);
