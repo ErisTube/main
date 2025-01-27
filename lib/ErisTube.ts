@@ -1,5 +1,5 @@
 // Import requirements
-import { Client, Collection } from 'eris';
+import { Client } from 'eris';
 
 // Import addons
 import { ETError } from './classes/Error';
@@ -70,7 +70,7 @@ export class ErisTube extends ETEmitter<ETEvents> {
 		 *
 		 * @type {ETVoice}
 		 */
-		this.voice = new ETVoice(this._client);
+		this.voice = new ETVoice(this._client, this.options.debug);
 
 		this.#init();
 	}
@@ -96,12 +96,22 @@ export class ErisTube extends ETEmitter<ETEvents> {
 	#registerPlugins(plugins: ETPlugin[]): Map<string, ETPlugin> {
 		const registered = new Map();
 
+		if (this.options.debug) {
+			console.log(`[ErisTube] Starting load plugins...`);
+		}
+
 		for (const plugin of plugins) {
 			if (registered.has(plugin.name)) {
 				throw new ETError(`Plugin '${plugin.name}' already registered!`);
 			}
 
 			registered.set(plugin.name, plugin);
+
+			if (this.options.debug) {
+				console.log(
+					`[ErisTube] Plugin '${plugin.name}@${plugin.version}' successfully loaded!`
+				);
+			}
 		}
 
 		return registered;
