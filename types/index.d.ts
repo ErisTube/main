@@ -1,6 +1,7 @@
 import { Client } from 'eris';
 
 import { ETEmitter } from './classes/Emitter';
+import { ETFilters } from './classes/Filters';
 import { ETPlugin } from './classes/Plugin';
 import { ETVoice } from './classes/Voice';
 
@@ -14,7 +15,9 @@ export declare class ErisTube extends ETEmitter<ETEvents> {
 	private readonly _errored: boolean;
 
 	public plugins: Map<string, ETPlugin>;
+
 	public voice: ETVoice;
+	public filters: ETFilters;
 
 	/**
 	 * Indicates whether the ErisTube is ready.
