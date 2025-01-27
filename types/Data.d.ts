@@ -15,10 +15,22 @@ export interface SearchTrackData {
 	duration: TrackDuration;
 }
 
+export interface SearchPlaylist {
+	id: string;
+	url: string;
+	title: string;
+	thumbnail: string;
+	duration: PlaylistDuration;
+
+	items: SearchTrackData[];
+}
+
 export interface TrackArtist {
 	name: string;
 	url: string;
 }
+
+type PlaylistDuration = TrackDuration;
 
 export interface TrackDuration {
 	value: number;
