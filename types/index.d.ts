@@ -4,6 +4,7 @@ import { ETEmitter } from './classes/Emitter';
 import { ETFilters } from './classes/Filters';
 import { ETPlugin } from './classes/Plugin';
 import { ETVoice } from './classes/Voice';
+import { ETGuildQueue } from './classes/GuildQueue';
 
 import { ETEvents } from './Events';
 import { ETOptions } from './Options';
@@ -16,6 +17,7 @@ export declare class ErisTube extends ETEmitter<ETEvents> {
 	private readonly _errored: boolean;
 
 	public plugins: Map<string, ETPlugin>;
+	public queues: Map<string, ETGuildQueue>;
 
 	public voice: ETVoice;
 	public filters: ETFilters;
@@ -79,6 +81,7 @@ export * from './classes/Error';
 export * from './classes/Plugin';
 export * from './classes/Filters';
 export * from './classes/Stream';
+export * from './classes/GuildQueue';
 
 export * from './util/formatDuration.function';
 export * from './util/formatNumber.function';

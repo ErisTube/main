@@ -6,6 +6,7 @@ import { ETError } from './classes/Error';
 import { ETVoice } from './classes/Voice';
 import { ETEmitter } from './classes/Emitter';
 import { ETFilters } from './classes/Filters';
+import { ETGuildQueue } from './classes/GuildQueue';
 
 // Import types
 import {
@@ -32,6 +33,7 @@ export class ErisTube extends ETEmitter<ETEvents> {
 
 	public options: ETOptions;
 	public plugins: Map<string, ETPlugin>;
+	public queues: Map<string, ETGuildQueue>;
 
 	public voice: ETVoice;
 	public filters: ETFilters;
@@ -74,6 +76,13 @@ export class ErisTube extends ETEmitter<ETEvents> {
 		 * @type {Map<string, ETPlugin>}
 		 */
 		this.plugins = this.#registerPlugins(options.plugins);
+
+		/**
+		 * ErisTube queues map
+		 *
+		 * @type {Map<string, ETGuildQueue>}
+		 */
+		this.queues = new Map();
 
 		/**
 		 * ErisTube voice manager
