@@ -1,7 +1,7 @@
 {
 	"name": "eristube",
 	"description": "A powerful music player for your Discord bot on Eris.",
-	"version": "1.0.0-dev.1737867405",
+	"version": "1.0.0-dev.1737936078",
 	"main": "index.js",
 	"scripts": {
 		"build": "tsc -p tsconfig.json",
