@@ -36,3 +36,8 @@ export interface TrackDuration {
 	value: number;
 	format: string[];
 }
+
+export interface PlaybackFilter {
+	name: string;
+	value: string;
+}

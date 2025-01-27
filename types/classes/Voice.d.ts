@@ -3,6 +3,9 @@ import { Client, VoiceConnection } from 'eris';
 export declare class ETVoice {
 	constructor(client: Client, debug?: boolean);
 
+	private _client: Client;
+	private _debug: boolean;
+
 	/**
 	 * Checks if there is an active connection to a specified voice channel.
 	 *

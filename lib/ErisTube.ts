@@ -5,6 +5,7 @@ import { Client } from 'eris';
 import { ETError } from './classes/Error';
 import { ETVoice } from './classes/Voice';
 import { ETEmitter } from './classes/Emitter';
+import { ETFilters } from './classes/Filters';
 
 // Import types
 import { ETEvents, ETOptions, ETPlugin } from '../types';
@@ -25,6 +26,7 @@ export class ErisTube extends ETEmitter<ETEvents> {
 	public plugins: Map<string, ETPlugin>;
 
 	public voice: ETVoice;
+	public filters: ETFilters;
 
 	/**
 	 * @constructor
@@ -71,6 +73,13 @@ export class ErisTube extends ETEmitter<ETEvents> {
 		 * @type {ETVoice}
 		 */
 		this.voice = new ETVoice(this._client, this.options.debug);
+
+		/**
+		 * ErisTube filters manager
+		 *
+		 * @type {ETFilters}
+		 */
+		this.filters = new ETFilters(this.options.debug);
 
 		this.#init();
 	}
