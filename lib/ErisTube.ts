@@ -10,6 +10,7 @@ import { ETGuildQueue } from './classes/GuildQueue';
 
 // Import types
 import {
+	CollectorType,
 	ETEvents,
 	ETOptions,
 	ETPlugin,
@@ -127,8 +128,8 @@ export class ErisTube extends ETEmitter<ETEvents> {
 		try {
 			const plugins = this.plugins
 				.values()
-				.filter(p => p.type === ETPluginType.SEARCH)
-				.toArray();
+				.toArray()
+				.filter(p => p.type === ETPluginType.SEARCH);
 
 			if (!plugins.length) {
 				throw new ETError(

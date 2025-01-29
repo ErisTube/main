@@ -1,6 +1,7 @@
 export enum ETPluginType {
 	SEARCH = 'searchProvider',
 	LYRICS = 'lyricsProvider',
+	COLLECTORS = 'collectorsProvider',
 }
 
 export enum QueueState {

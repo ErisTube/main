@@ -326,8 +326,8 @@ export class ETGuildQueue {
 		try {
 			const plugins = this._eristube.plugins
 				.values()
-				.filter(v => v.type === ETPluginType.LYRICS)
-				.toArray();
+				.toArray()
+				.filter(v => v.type === ETPluginType.LYRICS);
 
 			if (!plugins.length) {
 				throw new ETError(
