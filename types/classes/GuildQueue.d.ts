@@ -78,6 +78,13 @@ export declare class ETGuildQueue {
 	): ETGuildQueue;
 
 	/**
+	 * Fetches the lyrics of the current track.
+	 *
+	 * @returns The lyrics of the current track.
+	 */
+	public lyrics(): Promise<string>;
+
+	/**
 	 * Starts or resumes playback of the current track, optionally seeking to a specific position.
 	 *
 	 * @param seek - The position (in seconds) to start playback from. Defaults to `0` (start of the track).
@@ -112,5 +119,5 @@ export declare class ETGuildQueue {
 	 * @private
 	 * @returns Resolves to the generated stream URL.
 	 */
-	#createstreamUrl(): Promise<string>;
+	#createStreamUrl(): Promise<string>;
 }

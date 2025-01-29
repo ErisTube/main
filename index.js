@@ -27,4 +27,5 @@ __exportStar(require("./lib/util/formatNumber.function"), exports);
 __exportStar(require("./lib/util/getVideoStats.function"), exports);
 __exportStar(require("./lib/util/isValidURL.function"), exports);
 __exportStar(require("./lib/util/normalizeArray.function"), exports);
+__exportStar(require("./lib/util/isPlaylist.function"), exports);
 __exportStar(require("./lib/Enums"), exports);
