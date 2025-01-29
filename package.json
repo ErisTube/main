@@ -29,7 +29,6 @@
 	},
 	"dependencies": {
 		"@distube/ytdl-core": "^4.15.9",
-		"@eristube/ytdl": "1.0.0",
 		"axios": "^1.7.9",
 		"eris": "github:abalabahaha/eris#dev"
 	},
