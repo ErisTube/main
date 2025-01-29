@@ -3,17 +3,17 @@ import { Readable } from 'stream';
 import ytdl from '@distube/ytdl-core';
 import { VoiceConnection } from 'eris';
 
+import { ETError } from './Error';
 import { ETStream } from './Stream';
 import { ErisTube } from '../ErisTube';
 
 // Import types
-import { QueueRepeat, QueueState } from '../Enums';
+import { ETPluginType, QueueRepeat, QueueState } from '../Enums';
 import {
 	GuildQueue,
 	QueueOptions,
 	QueueTrack,
 	SearchTrackData,
-	SearchType,
 } from '../../types';
 import { normalizeArray, RestOrArray } from '../util/normalizeArray.function';
 
@@ -318,6 +318,63 @@ export class ETGuildQueue {
 	}
 
 	/**
+	 * Fetches the lyrics of the current track.
+	 *
+	 * @returns {Promise<string>} The lyrics of the current track.
+	 */
+	public async lyrics(): Promise<string> {
+		try {
+			const plugins = this._eristube.plugins
+				.values()
+				.filter(v => v.type === ETPluginType.LYRICS)
+				.toArray();
+
+			if (!plugins.length) {
+				throw new ETError(
+					'Could not find the required lyrics provider. Try installing @eristube/lyrics.'
+				);
+			}
+
+			if (this._eristube.options.debug) {
+				console.log(
+					`[ErisTube Queue] Found ${plugins.length} lyrics providers!`
+				);
+			}
+
+			let results: string = undefined;
+
+			const track = this.tracks[this._trackIndex];
+			const query = track.title.includes(track.artist.name)
+				? `${track.title}`
+				: `${track.artist.name
+						.replace('- Topic', '')
+						.replace('- topic', '')
+						.replace('- тема', '')
+						.replace('- Тема', '')} ${track.title}`;
+
+			for (const plugin of plugins) {
+				results = await plugin.resolve(query);
+
+				if (results != undefined) {
+					break;
+				}
+			}
+
+			if (this._eristube.options.debug) {
+				console.log(
+					`[ErisTube Queue] Lyrics query: ${query}, success: ${Boolean(
+						results?.length
+					)}`
+				);
+			}
+
+			return results;
+		} catch (e) {
+			throw new ETError(e.message);
+		}
+	}
+
+	/**
 	 * Starts or resumes playback of the current track, optionally seeking to a specific position.
 	 *
 	 * @param {number} [seek=0] - The position (in seconds) to start playback from. Defaults to `0` (start of the track).
@@ -330,7 +387,7 @@ export class ETGuildQueue {
 			this._output = null;
 		}
 
-		const url = await this.#createstreamUrl();
+		const url = await this.#createStreamUrl();
 
 		this._seek = null;
 		this._stream = new ETStream(url).setOptions('-af', this.filter);
@@ -453,7 +510,7 @@ export class ETGuildQueue {
 	 * @private
 	 * @returns {Promise<string>} Resolves to the generated stream URL.
 	 */
-	async #createstreamUrl(): Promise<string> {
+	async #createStreamUrl(): Promise<string> {
 		const info = await ytdl.getInfo(this.tracks[this._trackIndex].url);
 
 		let results: Array<ytdl.videoFormat> = [];

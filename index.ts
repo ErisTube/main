@@ -13,5 +13,6 @@ export * from './lib/util/formatNumber.function';
 export * from './lib/util/getVideoStats.function';
 export * from './lib/util/isValidURL.function';
 export * from './lib/util/normalizeArray.function';
+export * from './lib/util/isPlaylist.function';
 
 export * from './lib/Enums';

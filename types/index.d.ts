@@ -88,6 +88,7 @@ export * from './util/formatNumber.function';
 export * from './util/getVideoStats.function';
 export * from './util/isValidURL.function';
 export * from './util/normalizeArray.function';
+export * from './util/isPlaylist.function';
 
 export * from './Options';
 export * from './Events';

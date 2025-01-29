@@ -132,7 +132,7 @@ export class ErisTube extends ETEmitter<ETEvents> {
 
 			if (!plugins.length) {
 				throw new ETError(
-					'Could not find the required plugin for search. Try installing @eristube/youtube.'
+					'Could not find the required search provider. Try installing @eristube/youtube.'
 				);
 			}
 
