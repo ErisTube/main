@@ -1,5 +1,5 @@
 // Import requirements
-import { Client } from 'eris';
+import { Client, Member, Message, PartialEmoji } from 'eris';
 
 // Import addons
 import { ETError } from './classes/Error';
@@ -10,6 +10,8 @@ import { ETGuildQueue } from './classes/GuildQueue';
 
 // Import types
 import {
+	CollectorType,
+	COptions,
 	ETEvents,
 	ETOptions,
 	ETPlugin,
@@ -117,13 +119,13 @@ export class ErisTube extends ETEmitter<ETEvents> {
 	 * @param {SearchType} [type='track'] - The type of search (`'track'` or `'playlist'`). Defaults to `'track'`.
 	 * @param {number} [count=null] - The maximum number of results to return. If `null`, returns all available results.
 	 *
-	 * @returns {Promise<SearchTrackData | SearchTrackData[] | SearchPlaylist[]>} Resolves to either a single track, an array of tracks, or an array of playlists.
+	 * @returns {Promise<SearchTrackData | (SearchTrackData | SearchPlaylist)[]>} Resolves to either a single track, an array of tracks, or an array of playlists.
 	 */
 	public async search(
 		query: string,
 		type: SearchType = 'track',
 		count: number = null
-	): Promise<SearchTrackData | SearchTrackData[] | SearchPlaylist[]> {
+	): Promise<SearchTrackData | (SearchTrackData | SearchPlaylist)[]> {
 		try {
 			const plugins = this.plugins
 				.values()
@@ -146,7 +148,7 @@ export class ErisTube extends ETEmitter<ETEvents> {
 				undefined;
 
 			for (const plugin of plugins) {
-				results = await plugin.resolve<any>(
+				results = await plugin.resolve(
 					type,
 					query,
 					count ?? this.options.settings.searchResultsCount
@@ -158,6 +160,93 @@ export class ErisTube extends ETEmitter<ETEvents> {
 			}
 
 			return results;
+		} catch (e) {
+			throw new ETError(e.message);
+		}
+	}
+
+	/**
+	 * Creates a collector based on the specified type and options.
+	 *
+	 * @param {CollectorType} type - The type of collector to create.
+	 * @param {COptions} options - The configuration options for the collector.
+	 *
+	 * @returns {Promise<number>} Resolves with the collector's unique identifier.
+	 */
+	public async createCollector(
+		type: CollectorType,
+		options: COptions
+	): Promise<number> {
+		try {
+			const plugins = this.plugins
+				.values()
+				.toArray()
+				.filter(p => p.type === ETPluginType.COLLECTORS);
+
+			if (!plugins.length) {
+				throw new ETError(
+					'Could not find the required collector builders. Try installing @eristube/collectors.'
+				);
+			}
+
+			if (this.options.debug) {
+				console.log(
+					`[ErisTube] Found ${plugins.length} plugins for building collectors!`
+				);
+			}
+
+			if (options.isReactionsAdd) {
+				const reactions = [
+					'1️⃣',
+					'2️⃣',
+					'3️⃣',
+					'4️⃣',
+					'5️⃣',
+					'6️⃣',
+					'7️⃣',
+					'8️⃣',
+					'9️⃣',
+					'🔟',
+				];
+
+				if (options.count && options.count <= 10) {
+					for (let i = 0; i < options.count; i++) {
+						if (reactions[i]) {
+							await options.message.addReaction(reactions[i]);
+						}
+					}
+				}
+			}
+
+			let result: number = null;
+
+			for (const plugin of plugins) {
+				result = await plugin.resolve(
+					type === 'reaction' ? 'messageReactionAdd' : 'messageCreate',
+
+					{
+						client: this._client,
+
+						member: options.member,
+						message: options.message,
+
+						count: options.count ?? 10,
+						timeout: options.timeout ?? 60 * 1_000,
+
+						checkFunc: (msg: Message, emo: PartialEmoji, member: Member) =>
+							type === 'reaction'
+								? msg.id === options.message.id &&
+								  member.id === options.member.id
+								: msg.author.id === options.member.id,
+					}
+				);
+
+				if (typeof result != 'undefined') {
+					break;
+				}
+			}
+
+			return result;
 		} catch (e) {
 			throw new ETError(e.message);
 		}
