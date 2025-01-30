@@ -52,13 +52,11 @@ export abstract class ETPlugin {
 	/**
 	 * Resolves the provided data and returns a processed result.
 	 *
-	 * @template T - The type of the input data (defaults to `any`).
-	 *
-	 * @param {...T[]} data - The data to be resolved.
+	 * @param {any[]} data - The data to be resolved.
 	 *
 	 * @returns {any | Promise<any>} The resolved result, which may be synchronous or asynchronous.
 	 */
-	public abstract resolve<T = any>(...data: T[]): any | Promise<any>;
+	public abstract resolve(...data: any[]): any | Promise<any>;
 
 	/**
 	 * Initializes the ErisTube instance.
