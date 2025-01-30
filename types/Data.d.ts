@@ -1,4 +1,4 @@
-import { User, VoiceConnection } from 'eris';
+import { Client, Member, Message, User, VoiceConnection } from 'eris';
 import { QueueRepeat, QueueState } from './Enums';
 
 export interface TrackStats {
@@ -75,4 +75,16 @@ export interface TrackProgress {
 	percents: number;
 }
 
+export interface COptions {
+	client: Client;
+
+	count?: number;
+	timeout?: number;
+	isReactionsAdd?: boolean;
+
+	member: Member;
+	message: Message;
+}
+
 export type SearchType = 'track' | 'playlist';
+export type CollectorType = 'reaction' | 'message';

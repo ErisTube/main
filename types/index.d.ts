@@ -8,7 +8,13 @@ import { ETGuildQueue } from './classes/GuildQueue';
 
 import { ETEvents } from './Events';
 import { ETOptions } from './Options';
-import { SearchPlaylist, SearchTrackData, SearchType } from './Data';
+import {
+	CollectorType,
+	COptions,
+	SearchPlaylist,
+	SearchTrackData,
+	SearchType,
+} from './Data';
 
 export declare class ErisTube extends ETEmitter<ETEvents> {
 	constructor(client: Client, options?: ETOptions);
@@ -42,7 +48,20 @@ export declare class ErisTube extends ETEmitter<ETEvents> {
 		query: string,
 		type?: SearchType,
 		count?: number
-	): Promise<SearchTrackData | SearchTrackData[] | SearchPlaylist[]>;
+	): Promise<SearchTrackData | (SearchTrackData | SearchPlaylist)[]>;
+
+	/**
+	 * Creates a collector based on the specified type and options.
+	 *
+	 * @param type - The type of collector to create.
+	 * @param options - The configuration options for the collector.
+	 *
+	 * @returns Resolves with the collector's unique identifier.
+	 */
+	public createCollector(
+		type: CollectorType,
+		options: COptions
+	): Promise<number>;
 
 	/**
 	 * Registers an array of plugins and ensures there are no duplicates.
