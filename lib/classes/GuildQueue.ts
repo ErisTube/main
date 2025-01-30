@@ -353,7 +353,7 @@ export class ETGuildQueue {
 						.replace('- Тема', '')} ${track.title}`;
 
 			for (const plugin of plugins) {
-				results = await plugin.resolve(query);
+				results = await plugin.resolve<string>(query);
 
 				if (results != undefined) {
 					break;

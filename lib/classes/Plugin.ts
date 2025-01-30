@@ -15,7 +15,7 @@ export abstract class ETPlugin {
 	 * @readonly
 	 * @type {string}
 	 */
-	abstract readonly name: string;
+	public abstract name: string;
 
 	/**
 	 * Plugin type
@@ -23,7 +23,7 @@ export abstract class ETPlugin {
 	 * @readonly
 	 * @type {ETPluginType}
 	 */
-	abstract readonly type: ETPluginType;
+	public abstract type: ETPluginType;
 
 	/**
 	 * Plugin version
@@ -31,7 +31,7 @@ export abstract class ETPlugin {
 	 * @readonly
 	 * @type {string}
 	 */
-	abstract readonly version: string;
+	public abstract version: string;
 
 	/**
 	 * Plugin description
@@ -39,7 +39,7 @@ export abstract class ETPlugin {
 	 * @readonly
 	 * @type {string}
 	 */
-	abstract readonly description: string;
+	public abstract description: string;
 
 	/**
 	 * ErisTube instance
@@ -47,18 +47,18 @@ export abstract class ETPlugin {
 	 * @readonly
 	 * @type {ErisTube}
 	 */
-	abstract eristube: ErisTube;
+	public abstract eristube: ErisTube;
 
 	/**
-	 * Abstract method that must be implemented by subclasses to process the provided data.
+	 * Resolves the provided data and returns a processed result.
 	 *
-	 * @abstract
+	 * @template T - The type of the input data (defaults to `any`).
 	 *
-	 * @param {any} data - The data to be processed.
+	 * @param {...T[]} data - The data to be resolved.
 	 *
-	 * @returns {Promise<any>} A promise that resolves when processing is complete.
+	 * @returns {any | Promise<any>} The resolved result, which may be synchronous or asynchronous.
 	 */
-	abstract resolve<T = any>(data: T): Promise<any>;
+	public abstract resolve<T = any>(...data: T[]): any | Promise<any>;
 
 	/**
 	 * Initializes the ErisTube instance.
