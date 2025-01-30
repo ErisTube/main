@@ -8,13 +8,15 @@ export declare class ETPlugin {
 	public eristube: ErisTube;
 
 	/**
-	 * Abstract method that must be implemented by subclasses to process the provided data.
+	 * Resolves the provided data and returns a processed result.
 	 *
-	 * @param data - The data to be processed.
+	 * @template T - The type of the input data (defaults to `any`).
 	 *
-	 * @returns A promise that resolves when processing is complete.
+	 * @param {...T[]} data - The data to be resolved.
+	 *
+	 * @returns {any | Promise<any>} The resolved result, which may be synchronous or asynchronous.
 	 */
-	public resolve<T = any>(data: T): Promise<any>;
+	public abstract resolve<T = any>(...data: T[]): any | Promise<any>;
 
 	/**
 	 * Initializes the ErisTube instance.
