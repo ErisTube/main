@@ -6,16 +6,17 @@ import { VoiceConnection } from 'eris';
 import { ETError } from './Error';
 import { ETStream } from './Stream';
 import { ErisTube } from '../ErisTube';
+import { ETPluginType, QueueRepeat, QueueState, SkipType } from '../Enums';
+import { normalizeArray, RestOrArray } from '../util/normalizeArray.function';
 
 // Import types
-import { ETPluginType, QueueRepeat, QueueState } from '../Enums';
 import {
 	GuildQueue,
 	QueueOptions,
 	QueueTrack,
 	SearchTrackData,
+	TrackProgress,
 } from '../../types';
-import { normalizeArray, RestOrArray } from '../util/normalizeArray.function';
 
 export class ETGuildQueue {
 	private _eristube: ErisTube;
@@ -30,6 +31,7 @@ export class ETGuildQueue {
 	public endedAt: number;
 
 	public readonly guildId: string;
+	public textChannelId: string;
 	public connection: VoiceConnection;
 	public volume: number;
 	public filter: string;
@@ -108,6 +110,13 @@ export class ETGuildQueue {
 		 * @type {string}
 		 */
 		this.guildId = options.guildId;
+
+		/**
+		 * Queue text channel id
+		 *
+		 * @type {string}
+		 */
+		this.textChannelId = options.textChannelId;
 
 		/**
 		 * Eris voice connection
@@ -313,6 +322,186 @@ export class ETGuildQueue {
 		}
 
 		this._eristube.emit('tracksAdded', this.guildId, results);
+
+		return this;
+	}
+
+	/**
+	 * Applies audio filters to the current FFmpeg stream.
+	 *
+	 * @param {...string[]} values - A list of FFmpeg audio filters, such as `"volume=1.5"` or `"atempo=1.2"`.
+	 *                               If no filters are provided, the default `anull` filter is applied.
+	 * @returns {ETGuildQueue} Updated instance.
+	 */
+	public setFilter(...values: string[]): ETGuildQueue {
+		let value = (values ?? ['anull']).join(',');
+
+		this.filter = value;
+		this._output = this._stream.kill();
+		this.connection.piper.stop(null, null);
+
+		this.play();
+
+		return this;
+	}
+
+	/**
+	 * Sets the playback volume for the current stream and restarts playback.
+	 *
+	 * @param {number} [value=100] - The desired volume level as a percentage (0 to 100 or higher).
+	 * If not provided, the default volume from the player configuration will be used.
+	 *
+	 * @returns {ETGuildQueue} Updated instance.
+	 */
+	public setVolume(value?: number): ETGuildQueue {
+		value = Math.floor(
+			(value ?? this._eristube.options.settings.defaultVolume) / 100
+		);
+
+		this.volume = value;
+		this.connection.setVolume(value);
+
+		return this;
+	}
+
+	/**
+	 * Sets the playback state of the queue.
+	 *
+	 * @param {QueueState} [value=QueueState.PLAYING] - The new state of the queue. Defaults to `QueueState.PLAYING`.
+	 *
+	 * @returns {ETGuildQueue} Updated instance.
+	 */
+	public setState(value: QueueState = QueueState.PLAYING): ETGuildQueue {
+		if (value === QueueState.PAUSED) {
+			this.connection.pause();
+		}
+
+		if (value === QueueState.PLAYING) {
+			this.connection.resume();
+		}
+
+		this.state = value;
+
+		return this;
+	}
+
+	/**
+	 * Sets the repeat mode for the queue.
+	 *
+	 * @param {QueueRepeat} [value=QueueRepeat.NONE] - The repeat mode to set. Defaults to `QueueRepeat.TRACK`.
+	 *
+	 * @returns {ETGuildQueue} Updated instance.
+	 */
+	public setRepeat(value: QueueRepeat = QueueRepeat.NONE): ETGuildQueue {
+		this.repeat = value;
+
+		return this;
+	}
+
+	/**
+	 * Skips the currently playing track in the queue.
+	 *
+	 * @param {SkipType} [value=SkipType.NEXT] - The direction to skip. Defaults to `SkipType.NEXT`.
+	 * Use `SkipType.NEXT` to skip to the next track, or `SkipType.PREVIOUS` to go back to the previous track.
+	 *
+	 * @returns {ETGuildQueue} Updated instance.
+	 */
+	public skip(value: SkipType = SkipType.NEXT): ETGuildQueue {
+		if (value === SkipType.NEXT) {
+			this._trackIndex++;
+
+			if (this._trackIndex > this.tracks.length - 1) {
+				this._trackIndex = 0;
+			}
+		} else {
+			this._trackIndex--;
+
+			if (this._trackIndex < 0) {
+				this._trackIndex = this.tracks.length - 1;
+			}
+		}
+
+		this._stream.kill();
+		this.connection.piper.stop(null, null);
+
+		this.play();
+
+		return this;
+	}
+
+	/**
+	 * Seeks to a specific position in the currently playing track.
+	 *
+	 * @param {number} [value=0] - The timestamp (in seconds) to seek to. Defaults to `0` (start of the track).
+	 *
+	 * @returns {ETGuildQueue} Updated instance.
+	 */
+	public seek(value: number = 0): ETGuildQueue {
+		this._stream.kill();
+		this.connection.piper.stop(null, null);
+
+		this.play(value);
+
+		return this;
+	}
+
+	/**
+	 * Generates a progress bar for the currently playing track.
+	 *
+	 * @param {string} [pointer='●'] - The character representing the current position in the progress bar.
+	 * @param {string} [line='▬'] - The character used to fill the progress bar.
+	 * @param {number} [size=20] - The total length of the progress bar in characters.
+	 *
+	 * @returns {TrackProgress} An object representing the track's progress.
+	 */
+	public progress(
+		size: number = 20,
+		pointer: string = '●',
+		line: string = '▬'
+	): TrackProgress {
+		const total = this.tracks[this._trackIndex].duration.value;
+		const current =
+			Math.floor((Date.now() - this.connection.current?.startTime) / 1000) +
+			(this._seek ?? 0);
+		const percent = Math.floor((current / total) * 100);
+
+		if (total <= 0 || current <= 0) {
+			return {
+				bar: pointer + line.repeat(size),
+				percents: 0,
+			};
+		}
+
+		const progress = Math.min(current / total, 1);
+		const filledLength = Math.round(progress * size);
+		const bar =
+			line.repeat(filledLength) + pointer + line.repeat(size - filledLength);
+
+		return {
+			bar: bar,
+			percents: percent,
+		};
+	}
+
+	/**
+	 * Shuffles the tracks in the player queue, keeping the first track in place.
+	 *
+	 * @returns {ETGuildQueue} Updated instance.
+	 */
+	public shuffle(): ETGuildQueue {
+		if (this.tracks.length > 2) {
+			const current = this.tracks.shift();
+
+			for (let i = this.tracks.length - 1; i > 0; i--) {
+				const index = Math.floor(Math.random() * (i + 1));
+				[this.tracks[i], this.tracks[index]] = [
+					this.tracks[index],
+					this.tracks[i],
+				];
+			}
+
+			this.tracks.unshift(current);
+		}
 
 		return this;
 	}
