@@ -14,7 +14,7 @@ import {
 	TrackProgress,
 } from '../index';
 
-export declare class ETGuildQueue {
+export declare class ETGuildQueue<T extends Record<string, any>> {
 	constructor(eristube: ErisTube, options: QueueOptions);
 
 	private _eristube: ErisTube;
@@ -38,6 +38,8 @@ export declare class ETGuildQueue {
 
 	public tracks: QueueTrack[];
 	public history: QueueTrack[];
+
+	public custom: T;
 
 	/**
 	 * Number of tracks in current queue.
@@ -116,6 +118,25 @@ export declare class ETGuildQueue {
 	 * @returns Updated instance.
 	 */
 	public setRepeat(value?: QueueRepeat): ETGuildQueue;
+
+	/**
+	 * Sets a custom value in the queue's custom properties.
+	 *
+	 * @param key - The key of the custom property to set.
+	 * @param value - The value to assign to the specified key.
+	 *
+	 * @returns Updated instance.
+	 */
+	public setCustomValue<K extends keyof T>(key: K, value: T[K]): ETGuildQueue;
+
+	/**
+	 * Retrieves a custom value from the queue's custom properties.
+	 *
+	 * @param key - The key of the custom property to retrieve.
+	 *
+	 * @returns The value associated with the specified key.
+	 */
+	public getCustomValue<K extends keyof T>(key: K): T[K];
 
 	/**
 	 * Skips the currently playing track in the queue.

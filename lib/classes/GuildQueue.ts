@@ -18,7 +18,7 @@ import {
 	TrackProgress,
 } from '../../types';
 
-export class ETGuildQueue {
+export class ETGuildQueue<T extends Record<string, any>> {
 	private _eristube: ErisTube;
 	private _stream: ETStream;
 	private _output: Readable;
@@ -40,6 +40,8 @@ export class ETGuildQueue {
 
 	public tracks: QueueTrack[];
 	public history: QueueTrack[];
+
+	public custom: T;
 
 	constructor(eristube: ErisTube, options: QueueOptions) {
 		/**
@@ -166,6 +168,13 @@ export class ETGuildQueue {
 		 * @type {QueueTrack[]}
 		 */
 		this.history = [];
+
+		/**
+		 * Queue custom data
+		 *
+		 * @type {T}
+		 */
+		this.custom = {} as T;
 
 		this.connection?.on('end', async () => {
 			const index = this.tracks.length - 1;
@@ -304,7 +313,7 @@ export class ETGuildQueue {
 	public addTracks(
 		userId: string,
 		...tracks: RestOrArray<SearchTrackData>
-	): ETGuildQueue {
+	): this {
 		const results: QueueTrack[] = [];
 		const normalizedTracks = normalizeArray(tracks);
 
@@ -333,7 +342,7 @@ export class ETGuildQueue {
 	 *                               If no filters are provided, the default `anull` filter is applied.
 	 * @returns {ETGuildQueue} Updated instance.
 	 */
-	public setFilter(...values: string[]): ETGuildQueue {
+	public setFilter(...values: string[]): this {
 		let value = (values ?? ['anull']).join(',');
 
 		this.filter = value;
@@ -353,7 +362,7 @@ export class ETGuildQueue {
 	 *
 	 * @returns {ETGuildQueue} Updated instance.
 	 */
-	public setVolume(value?: number): ETGuildQueue {
+	public setVolume(value?: number): this {
 		value = Math.floor(
 			(value ?? this._eristube.options.settings.defaultVolume) / 100
 		);
@@ -371,7 +380,7 @@ export class ETGuildQueue {
 	 *
 	 * @returns {ETGuildQueue} Updated instance.
 	 */
-	public setState(value: QueueState = QueueState.PLAYING): ETGuildQueue {
+	public setState(value: QueueState = QueueState.PLAYING): this {
 		if (value === QueueState.PAUSED) {
 			this.connection.pause();
 		}
@@ -392,10 +401,34 @@ export class ETGuildQueue {
 	 *
 	 * @returns {ETGuildQueue} Updated instance.
 	 */
-	public setRepeat(value: QueueRepeat = QueueRepeat.NONE): ETGuildQueue {
+	public setRepeat(value: QueueRepeat = QueueRepeat.NONE): this {
 		this.repeat = value;
 
 		return this;
+	}
+
+	/**
+	 * Sets a custom value in the queue's custom properties.
+	 *
+	 * @param {K} key - The key of the custom property to set.
+	 * @param {T[K]} value - The value to assign to the specified key.
+	 *
+	 * @returns {ETGuildQueue} Updated instance.
+	 */
+	public setCustomValue<K extends keyof T>(key: K, value: T[K]): this {
+		this.custom[key] = value;
+		return this;
+	}
+
+	/**
+	 * Retrieves a custom value from the queue's custom properties.
+	 *
+	 * @param {K} key - The key of the custom property to retrieve.
+	 *
+	 * @returns {T[K]} The value associated with the specified key.
+	 */
+	public getCustomValue<K extends keyof T>(key: K): T[K] {
+		return this.custom[key];
 	}
 
 	/**
@@ -406,7 +439,7 @@ export class ETGuildQueue {
 	 *
 	 * @returns {ETGuildQueue} Updated instance.
 	 */
-	public skip(value: SkipType = SkipType.NEXT): ETGuildQueue {
+	public skip(value: SkipType = SkipType.NEXT): this {
 		if (value === SkipType.NEXT) {
 			this._trackIndex++;
 
@@ -436,7 +469,7 @@ export class ETGuildQueue {
 	 *
 	 * @returns {ETGuildQueue} Updated instance.
 	 */
-	public seek(value: number = 0): ETGuildQueue {
+	public seek(value: number = 0): this {
 		this._stream.kill();
 		this.connection.piper.stop(null, null);
 
@@ -488,7 +521,7 @@ export class ETGuildQueue {
 	 *
 	 * @returns {ETGuildQueue} Updated instance.
 	 */
-	public shuffle(): ETGuildQueue {
+	public shuffle(): this {
 		if (this.tracks.length > 2) {
 			const current = this.tracks.shift();
 
@@ -635,7 +668,7 @@ export class ETGuildQueue {
 	 *
 	 * @returns {ETGuildQueue} Updated instance.
 	 */
-	public destroy(): ETGuildQueue {
+	public destroy(): this {
 		const connectionId = this.connection?.id;
 
 		if (connectionId) {
@@ -663,7 +696,7 @@ export class ETGuildQueue {
 	 *
 	 * @returns {ETGuildQueue} Updated instance.
 	 */
-	public save(): ETGuildQueue {
+	public save(): this {
 		this._eristube.queues.set(this.connection.id, this);
 
 		return this;

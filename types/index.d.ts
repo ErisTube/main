@@ -23,7 +23,7 @@ export declare class ErisTube extends ETEmitter<ETEvents> {
 	private readonly _errored: boolean;
 
 	public plugins: Map<string, ETPlugin>;
-	public queues: Map<string, ETGuildQueue>;
+	public queues: Map<string, ETGuildQueue<Record<string, any>>>;
 
 	public voice: ETVoice;
 	public filters: ETFilters;
