@@ -47,6 +47,7 @@ export interface PlaybackFilter {
 
 export interface QueueOptions {
 	guildId: string;
+	textChannelId: string;
 }
 
 export interface QueueTrack extends SearchTrackData {

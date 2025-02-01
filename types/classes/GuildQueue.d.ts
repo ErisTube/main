@@ -10,6 +10,8 @@ import {
 	QueueTrack,
 	RestOrArray,
 	SearchTrackData,
+	SkipType,
+	TrackProgress,
 } from '../index';
 
 export declare class ETGuildQueue {
@@ -27,6 +29,7 @@ export declare class ETGuildQueue {
 	public endedAt: number;
 
 	public readonly guildId: string;
+	public readonly textChannelId: string;
 	public connection: VoiceConnection;
 	public volume: number;
 	public filter: string;
@@ -76,6 +79,84 @@ export declare class ETGuildQueue {
 		userId: string,
 		...tracks: RestOrArray<SearchTrackData>
 	): ETGuildQueue;
+
+	/**
+	 * Applies audio filters to the current FFmpeg stream.
+	 *
+	 * @param values - A list of FFmpeg audio filters, such as `"volume=1.5"` or `"atempo=1.2"`.
+	 *                               If no filters are provided, the default `anull` filter is applied.
+	 * @returns Updated instance.
+	 */
+	public setFilter(...values: string[]): ETGuildQueue;
+
+	/**
+	 * Sets the playback volume for the current stream and restarts playback.
+	 *
+	 * @param value - The desired volume level as a percentage (0 to 100 or higher).
+	 * If not provided, the default volume from the player configuration will be used.
+	 *
+	 * @returns Updated instance.
+	 */
+	public setVolume(value?: number): ETGuildQueue;
+
+	/**
+	 * Sets the playback state of the queue.
+	 *
+	 * @param value - The new state of the queue. Defaults to `QueueState.PLAYING`.
+	 *
+	 * @returns Updated instance.
+	 */
+	public setState(value?: QueueState): ETGuildQueue;
+
+	/**
+	 * Sets the repeat mode for the queue.
+	 *
+	 * @param value - The repeat mode to set. Defaults to `QueueRepeat.TRACK`.
+	 *
+	 * @returns Updated instance.
+	 */
+	public setRepeat(value?: QueueRepeat): ETGuildQueue;
+
+	/**
+	 * Skips the currently playing track in the queue.
+	 *
+	 * @param value - The direction to skip. Defaults to `SkipType.NEXT`.
+	 * Use `SkipType.NEXT` to skip to the next track, or `SkipType.PREVIOUS` to go back to the previous track.
+	 *
+	 * @returns Updated instance.
+	 */
+	public skip(value?: SkipType): ETGuildQueue;
+
+	/**
+	 * Seeks to a specific position in the currently playing track.
+	 *
+	 * @param value - The timestamp (in seconds) to seek to. Defaults to `0` (start of the track).
+	 *
+	 * @returns Updated instance.
+	 */
+	public seek(value?: number): ETGuildQueue;
+
+	/**
+	 * Generates a progress bar for the currently playing track.
+	 *
+	 * @param pointer - The character representing the current position in the progress bar.
+	 * @param line - The character used to fill the progress bar.
+	 * @param size - The total length of the progress bar in characters.
+	 *
+	 * @returns An object representing the track's progress.
+	 */
+	public progress(
+		size?: number,
+		pointer?: string,
+		line?: string
+	): TrackProgress;
+
+	/**
+	 * Shuffles the tracks in the player queue, keeping the first track in place.
+	 *
+	 * @returns Updated instance.
+	 */
+	public shuffle(): ETGuildQueue;
 
 	/**
 	 * Fetches the lyrics of the current track.
