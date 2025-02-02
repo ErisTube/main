@@ -54,13 +54,14 @@ export interface QueueTrack extends SearchTrackData {
 	requested: User;
 }
 
-export interface GuildQueue {
+export interface GuildQueue<T extends Record<string, any>> {
 	trackIndex: number;
 
 	startedAt: number;
 	endedAt: number;
 
 	guildId: string;
+	textChannelId: string;
 	connection: VoiceConnection;
 	volume: number;
 	filter: string;
@@ -69,6 +70,8 @@ export interface GuildQueue {
 
 	tracks: QueueTrack[];
 	history: QueueTrack[];
+
+	custom: T;
 }
 
 export interface TrackProgress {

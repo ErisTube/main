@@ -705,9 +705,9 @@ export class ETGuildQueue<T extends Record<string, any>> {
 	/**
 	 * Converts the queue state into a JSON-serializable object.
 	 *
-	 * @returns {GuildQueue} An object representing the current state of the queue.
+	 * @returns {GuildQueue<Record<string, any>>} An object representing the current state of the queue.
 	 */
-	public toJSON(): GuildQueue {
+	public toJSON(): GuildQueue<Record<string, any>> {
 		return {
 			trackIndex: this._trackIndex,
 
@@ -715,6 +715,7 @@ export class ETGuildQueue<T extends Record<string, any>> {
 			endedAt: this.endedAt,
 
 			guildId: this.guildId,
+			textChannelId: this.textChannelId,
 			connection: this.connection,
 			volume: this.volume,
 			filter: this.filter,
@@ -723,6 +724,8 @@ export class ETGuildQueue<T extends Record<string, any>> {
 
 			tracks: this.tracks,
 			history: this.history,
+
+			custom: this.custom,
 		};
 	}
 
