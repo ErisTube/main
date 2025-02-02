@@ -31,7 +31,7 @@ export class ETGuildQueue<T extends Record<string, any>> {
 	public endedAt: number;
 
 	public readonly guildId: string;
-	public textChannelId: string;
+	public readonly textChannelId: string;
 	public connection: VoiceConnection;
 	public volume: number;
 	public filter: string;

@@ -14,7 +14,7 @@ export declare class ETPlugin {
 	 *
 	 * @returns The resolved result, which may be synchronous or asynchronous.
 	 */
-	public abstract resolve(...data: any[]): any | Promise<any>;
+	public resolve(...data: any[]): any | Promise<any>;
 
 	/**
 	 * Initializes the ErisTube instance.
