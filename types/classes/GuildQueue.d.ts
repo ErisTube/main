@@ -80,7 +80,7 @@ export declare class ETGuildQueue<T extends Record<string, any>> {
 	public addTracks(
 		userId: string,
 		...tracks: RestOrArray<SearchTrackData>
-	): ETGuildQueue;
+	): this;
 
 	/**
 	 * Applies audio filters to the current FFmpeg stream.
@@ -89,7 +89,7 @@ export declare class ETGuildQueue<T extends Record<string, any>> {
 	 *                               If no filters are provided, the default `anull` filter is applied.
 	 * @returns Updated instance.
 	 */
-	public setFilter(...values: string[]): ETGuildQueue;
+	public setFilter(...values: string[]): this;
 
 	/**
 	 * Sets the playback volume for the current stream and restarts playback.
@@ -99,7 +99,7 @@ export declare class ETGuildQueue<T extends Record<string, any>> {
 	 *
 	 * @returns Updated instance.
 	 */
-	public setVolume(value?: number): ETGuildQueue;
+	public setVolume(value?: number): this;
 
 	/**
 	 * Sets the playback state of the queue.
@@ -108,7 +108,7 @@ export declare class ETGuildQueue<T extends Record<string, any>> {
 	 *
 	 * @returns Updated instance.
 	 */
-	public setState(value?: QueueState): ETGuildQueue;
+	public setState(value?: QueueState): this;
 
 	/**
 	 * Sets the repeat mode for the queue.
@@ -117,7 +117,7 @@ export declare class ETGuildQueue<T extends Record<string, any>> {
 	 *
 	 * @returns Updated instance.
 	 */
-	public setRepeat(value?: QueueRepeat): ETGuildQueue;
+	public setRepeat(value?: QueueRepeat): this;
 
 	/**
 	 * Sets a custom value in the queue's custom properties.
@@ -127,7 +127,7 @@ export declare class ETGuildQueue<T extends Record<string, any>> {
 	 *
 	 * @returns Updated instance.
 	 */
-	public setCustomValue<K extends keyof T>(key: K, value: T[K]): ETGuildQueue;
+	public setCustomValue<K extends keyof T>(key: K, value: T[K]): this;
 
 	/**
 	 * Retrieves a custom value from the queue's custom properties.
@@ -146,7 +146,7 @@ export declare class ETGuildQueue<T extends Record<string, any>> {
 	 *
 	 * @returns Updated instance.
 	 */
-	public skip(value?: SkipType): ETGuildQueue;
+	public skip(value?: SkipType): this;
 
 	/**
 	 * Seeks to a specific position in the currently playing track.
@@ -155,7 +155,7 @@ export declare class ETGuildQueue<T extends Record<string, any>> {
 	 *
 	 * @returns Updated instance.
 	 */
-	public seek(value?: number): ETGuildQueue;
+	public seek(value?: number): this;
 
 	/**
 	 * Generates a progress bar for the currently playing track.
@@ -177,7 +177,7 @@ export declare class ETGuildQueue<T extends Record<string, any>> {
 	 *
 	 * @returns Updated instance.
 	 */
-	public shuffle(): ETGuildQueue;
+	public shuffle(): this;
 
 	/**
 	 * Fetches the lyrics of the current track.
@@ -198,7 +198,7 @@ export declare class ETGuildQueue<T extends Record<string, any>> {
 	 *
 	 * @returns Updated instance.
 	 */
-	public destroy(): ETGuildQueue;
+	public destroy(): this;
 
 	/**
 	 * Saves the current state of the queue for future use.
@@ -206,14 +206,14 @@ export declare class ETGuildQueue<T extends Record<string, any>> {
 	 *
 	 * @returns Updated instance.
 	 */
-	public save(): ETGuildQueue;
+	public save(): this;
 
 	/**
 	 * Converts the queue state into a JSON-serializable object.
 	 *
 	 * @returns An object representing the current state of the queue.
 	 */
-	public toJSON(): GuildQueue;
+	public toJSON(): GuildQueue<Record<string, any>>;
 
 	/**
 	 * Generates and returns a FFMPEG stream URL.
