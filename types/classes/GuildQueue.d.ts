@@ -160,16 +160,18 @@ export declare class ETGuildQueue<T extends Record<string, any>> {
 	/**
 	 * Generates a progress bar for the currently playing track.
 	 *
+	 * @param size - The total length of the progress bar in characters.
 	 * @param pointer - The character representing the current position in the progress bar.
 	 * @param line - The character used to fill the progress bar.
-	 * @param size - The total length of the progress bar in characters.
+	 * @param fill - The character used for the filled part of the progress bar (if provided).
 	 *
 	 * @returns An object representing the track's progress.
 	 */
 	public progress(
 		size?: number,
 		pointer?: string,
-		line?: string
+		line?: string,
+		fill?: string
 	): TrackProgress;
 
 	/**
